@@ -4,7 +4,7 @@ Guía rápida: usar el script setDate
 - Presiona `Win + R`, escribe `cmd` y presiona Enter.
 
 2) Ir al directorio del script
-- Ejecuta: `cd C:\Users\faguirrr\dateCustom`
+- Ejecuta: `cd C:\Users\dir\dateCustom`
 
 3) Ejecutar el script (archivo .bat)
 - Sintaxis: `setDate.bat <Archivo.xlsx> <Fecha>`
@@ -20,7 +20,7 @@ Guía rápida: usar el script setDate
 
 6) Usar PowerShell (si prefiere .ps1)
 - Presiona `Win + R`, escribe `powershell` y Enter.
-- Ve al directorio: `cd C:\Users\faguirrr\dateCustom`
+- Ve al directorio: `cd C:\Users\dir\dateCustom`
 - Ejecuta: `.\setDate.ps1 Libro1.xlsx 200901021200`
 
 7) Permisos y notas
@@ -29,7 +29,7 @@ Guía rápida: usar el script setDate
 
 8) Resumen rápido (pasos copy-paste)
 - Abrir CMD: `Win + R` → escribe `cmd` → Enter
-- Ir al folder: `cd C:\Users\faguirrr\dateCustom`
+- Ir al folder: `cd C:\Users\dir\dateCustom`
 - Ejecutar: `setDate.bat Libro1.xlsx 200901021200`
 
 Fin de la guía rápida.
