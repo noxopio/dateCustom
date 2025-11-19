@@ -1,0 +1,35 @@
+Guía rápida: usar el script setDate
+
+1) Abrir la terminal CMD
+- Presiona `Win + R`, escribe `cmd` y presiona Enter.
+
+2) Ir al directorio del script
+- Ejecuta: `cd C:\Users\faguirrr\dateCustom`
+
+3) Ejecutar el script (archivo .bat)
+- Sintaxis: `setDate.bat <Archivo.xlsx> <Fecha>`
+- Ejemplo: `setDate.bat Libro1.xlsx 200901021200`
+
+4) Formato de la fecha
+- Use el formato `YYYYMMDDhhmm` (AñoMesDíaHoraMinuto).
+- Ejemplo: 2 de enero de 2009 a las 12:00 → `200901021200`.
+
+5) Si el archivo no está en el mismo directorio
+- Use la ruta completa entre comillas si contiene espacios:
+  `setDate.bat "C:\ruta\a\archivo.xlsx" 202511191230`
+
+6) Usar PowerShell (si prefiere .ps1)
+- Presiona `Win + R`, escribe `powershell` y Enter.
+- Ve al directorio: `cd C:\Users\faguirrr\dateCustom`
+- Ejecuta: `.\setDate.ps1 Libro1.xlsx 200901021200`
+
+7) Permisos y notas
+- Si el script falla por permisos, abre CMD/PowerShell como administrador.
+- Asegúrate de que Excel no tenga el archivo abierto mientras se ejecuta el script.
+
+8) Resumen rápido (pasos copy-paste)
+- Abrir CMD: `Win + R` → escribe `cmd` → Enter
+- Ir al folder: `cd C:\Users\faguirrr\dateCustom`
+- Ejecutar: `setDate.bat Libro1.xlsx 200901021200`
+
+Fin de la guía rápida.
