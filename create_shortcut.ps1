@@ -17,7 +17,9 @@ try {
 	$shortcut.TargetPath = $target
 	$shortcut.Arguments = $shortcutArgs
 	$shortcut.WorkingDirectory = $scriptPath
-	$shortcut.IconLocation = 'C:\Windows\System32\cmd.exe,0'
+	# $shortcut.IconLocation = 'C:\Windows\System32\shell32.dll,137'
+	$shortcut.IconLocation = (Join-Path $scriptPath 'clock.ico')
+
 	$shortcut.Save()
 	Write-Output "Acceso directo creado: $shortcutPath"
 }
