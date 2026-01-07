@@ -1,0 +1,75 @@
+====================================================================
+  SETDATE - MODO MULTI-ARCHIVO E INTERACTIVO
+====================================================================
+
+MODO INTERACTIVO (RECOMENDADO):
+  1. Ejecutar: setDate_quick.bat
+  2. Se abrirá un menú interactivo
+  3. Ingresar archivos y fechas en pares
+  4. Escribir "salir" o "exit" para terminar
+  5. El programa permite ejecutar múltiples veces
+
+EJEMPLO DE USO INTERACTIVO:
+  Ingrese archivos y fechas (o 'salir'): archivo1.txt 202001150900 archivo2.docx 202001151030
+  
+  O también:
+  Ingrese archivos y fechas (o 'salir'): "C:\Docs\Informe.xlsx" 201912311200
+
+====================================================================
+
+MODO LÍNEA DE COMANDOS:
+  
+  Un solo archivo:
+    setDate.bat archivo.txt 202001150900
+    
+  Múltiples archivos en una ejecución:
+    setDate.bat archivo1.txt 202001150900 archivo2.docx 201912311200 archivo3.xlsx 202002281530
+    
+  Con rutas completas:
+    setDate.bat "C:\Docs\Informe.xlsx" 202001150900 "C:\Docs\Reporte.docx" 201912311200
+
+====================================================================
+
+FORMATO DE FECHA:
+  - YYYYMMDDhhmm     (12 dígitos) - Ejemplo: 202001150900
+  - YYYYMMDDhhmmss   (14 dígitos) - Ejemplo: 20200115090030
+  
+  YYYY = Año (4 dígitos)
+  MM   = Mes (2 dígitos, 01-12)
+  DD   = Día (2 dígitos, 01-31)
+  hh   = Hora (2 dígitos, 00-23)
+  mm   = Minutos (2 dígitos, 00-59)
+  ss   = Segundos (2 dígitos, 00-59) [opcional]
+
+====================================================================
+
+EJEMPLOS PRÁCTICOS:
+
+1. Cambiar fecha de un documento Word a 15 de enero de 2020, 9:00 AM:
+   setDate_quick.bat
+   > Informe.docx 202001150900
+
+2. Cambiar fecha de varios archivos:
+   setDate_quick.bat
+   > archivo1.txt 202001150900 archivo2.pdf 201912311200 foto.jpg 202002281530
+
+3. Desde línea de comandos, varios archivos:
+   setDate.bat documento.docx 202001150900 hoja.xlsx 201912311200
+
+====================================================================
+
+MODO DRY-RUN (SIMULACIÓN):
+  Para probar sin modificar archivos:
+  powershell -File setDate.ps1 archivo.txt 202001150900 -n
+
+====================================================================
+
+NOTAS:
+  - El programa ahora procesa múltiples archivos en una sola ejecución
+  - En modo interactivo, se puede ejecutar varias veces sin cerrar
+  - Escribir "salir" o "exit" para terminar
+  - Cada archivo debe tener su fecha correspondiente
+  - Los pares deben ser: archivo1 fecha1 archivo2 fecha2 ...
+  - Se puede procesar carpetas completas (aplicará la fecha a todos los archivos)
+  
+====================================================================

@@ -1,43 +1,90 @@
 param(
-    [Parameter(Mandatory = $true)]
-    [string]$Target,
- 
-    [Parameter(Mandatory = $true)]
-    [string]$Timestamp,  # Formato: AAAAMMDDhhmm[ss]
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$Arguments,
  
     [switch]$n  # dry-run
 )
- 
-# Validar formato de fecha
-if ($Timestamp -notmatch '^\d{12}(\d{2})?$') {
-    Write-Host "Error: Formato inválido. Use AAAAMMDDhhmm o AAAAMMDDhhmmss"
+
+# Si no hay argumentos, salir
+if ($Arguments.Count -eq 0) {
+    Write-Host "Error: No se proporcionaron argumentos."
+    Write-Host "Uso: setDate.ps1 archivo1 fecha1 [archivo2 fecha2 ...]"
+    Write-Host "Formato de fecha: AAAAMMDDhhmm o AAAAMMDDhhmmss"
     exit 1
 }
- 
-# Convertir a DateTime
-try {
-    if ($Timestamp.Length -eq 12) {
-        $Date = [DateTime]::ParseExact($Timestamp, "yyyyMMddHHmm", $null)
-    } else {
-        $Date = [DateTime]::ParseExact($Timestamp, "yyyyMMddHHmmss", $null)
+
+# Verificar que hay un número par de argumentos
+if ($Arguments.Count % 2 -ne 0) {
+    Write-Host "Error: Debe proporcionar pares de archivo y fecha."
+    Write-Host "Uso: setDate.ps1 archivo1 fecha1 [archivo2 fecha2 ...]"
+    exit 1
+}
+
+# --- Función para procesar un archivo con su fecha ---
+function Process-FileWithDate {
+    param(
+        [string]$Target,
+        [string]$Timestamp
+    )
+
+    # Validar formato de fecha
+    if ($Timestamp -notmatch '^\d{12}(\d{2})?$') {
+        Write-Host "Error: Formato inválido para '$Target'. Use AAAAMMDDhhmm o AAAAMMDDhhmmss"
+        return $false
     }
-} catch {
-    Write-Host "Error: No se pudo convertir la fecha."
-    exit 1
+
+    # Convertir a DateTime
+    try {
+        if ($Timestamp.Length -eq 12) {
+            $Date = [DateTime]::ParseExact($Timestamp, "yyyyMMddHHmm", $null)
+        } else {
+            $Date = [DateTime]::ParseExact($Timestamp, "yyyyMMddHHmmss", $null)
+        }
+    } catch {
+        Write-Host "Error: No se pudo convertir la fecha para '$Target'."
+        return $false
+    }
+
+    # Resolver ruta completa
+    $FullPath = Resolve-Path $Target -ErrorAction SilentlyContinue
+    if (-not $FullPath) {
+        Write-Host "Error: Archivo o directorio no existe: '$Target'"
+        return $false
+    }
+
+    $FullPath = $FullPath.Path
+
+    Write-Host ""
+    Write-Host "================================"
+    Write-Host "Target: $Target"
+    Write-Host "Fecha: $($Date.ToString('yyyy-MM-dd HH:mm:ss'))"
+    Write-Host "================================"
+
+    # --- Detectar si es archivo o carpeta ---
+    if (Test-Path $FullPath -PathType Leaf) {
+        Process-File -FilePath $FullPath -Date $Date
+    }
+    elseif (Test-Path $FullPath -PathType Container) {
+        Write-Host "Escaneando carpeta: $FullPath"
+        Get-ChildItem -Path $FullPath -File -Recurse | ForEach-Object {
+            Process-File -FilePath $_.FullName -Date $Date
+        }
+    }
+    else {
+        Write-Host "Error: Ruta no válida."
+        return $false
+    }
+
+    return $true
 }
- 
-# Resolver ruta completa
-$FullPath = Resolve-Path $Target -ErrorAction SilentlyContinue
-if (-not $FullPath) {
-    Write-Host "Error: Archivo o directorio no existe."
-    exit 1
-}
- 
-$FullPath = $FullPath.Path
+
  
 # --- Función para procesar un archivo ---
 function Process-File {
-    param([string]$FilePath)
+    param(
+        [string]$FilePath,
+        [DateTime]$Date
+    )
  
     Write-Host "Procesando: $FilePath"
  
@@ -122,20 +169,36 @@ function Process-File {
  
     Write-Host "  Fechas aplicadas correctamente."
 }
- 
-# --- Detectar si es archivo o carpeta ---
-if (Test-Path $FullPath -PathType Leaf) {
-    Process-File -FilePath $FullPath
-}
-elseif (Test-Path $FullPath -PathType Container) {
-    Write-Host "Escaneando carpeta: $FullPath"
-    Get-ChildItem -Path $FullPath -File -Recurse | ForEach-Object {
-        Process-File $_.FullName
+
+# --- Procesar todos los pares de archivo/fecha ---
+$totalPairs = $Arguments.Count / 2
+$successCount = 0
+$failCount = 0
+
+Write-Host ""
+Write-Host "========================================"
+Write-Host "Procesando $totalPairs archivo(s)..."
+Write-Host "========================================"
+
+for ($i = 0; $i -lt $Arguments.Count; $i += 2) {
+    $target = $Arguments[$i]
+    $timestamp = $Arguments[$i + 1]
+    
+    Write-Host ""
+    Write-Host "[$($i/2 + 1)/$totalPairs] Procesando: $target"
+    
+    if (Process-FileWithDate -Target $target -Timestamp $timestamp) {
+        $successCount++
+    } else {
+        $failCount++
     }
 }
-else {
-    Write-Host "Error: Ruta no válida."
-    exit 1
-}
- 
+
+Write-Host ""
+Write-Host "========================================"
+Write-Host "Resumen:"
+Write-Host "  Total: $totalPairs"
+Write-Host "  Exitosos: $successCount"
+Write-Host "  Fallidos: $failCount"
+Write-Host "========================================"
 Write-Host "Completado."
